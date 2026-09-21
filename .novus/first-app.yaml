@@ -11,7 +11,7 @@ spec:
       repository: ghcr.io/dtu-platform-workshop/dtu-ozkanyamaner/first-app 
       # NOTICE: Update this line to whatever tag you see when you find it 
       # under the "Packages" in your repository 
-      tag: 20260921-2fe4f30
+      tag: 20260921-4ae4c3f
 
     useSamePortForHealthProbes: true
 
