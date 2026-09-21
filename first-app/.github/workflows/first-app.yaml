@@ -1,0 +1,40 @@
+name: push first-app to GHCR
+on:
+  push:
+    # Only run this workflow when the following files change:
+    paths:
+      - first-app/**
+      - .github/workflows/first-app.yaml
+
+# Parameters for the workflow
+env:
+  IMAGE: first-app
+  CONTEXT: first-app
+
+# The actual workflow, runs inside a machine running Ubuntu OS
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get package version
+        id: package-version
+        run: |
+          echo "version=$(git show -s --format=%cd --date=format:%Y%m%d HEAD)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "repo=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.CONTEXT }}
+          push: true
+          tags: ghcr.io/${{ steps.package-version.outputs.repo }}/${{ env.IMAGE }}:${{ steps.package-version.outputs.version }}
