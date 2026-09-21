@@ -1,0 +1,22 @@
+apiVersion: novus.legogroup.io/v1alpha1
+kind: WebApp
+metadata:
+  name: otel-app
+spec:
+  ingress:
+    subdomain: otel-app
+  service:
+    image:
+      # Make sure to update these values:
+      repository: ghcr.io/dtu-platform-workshop/dtu-ozkanyamaner/otel-app
+      tag: 20260921-2fe4f30
+
+    useSamePortForHealthProbes: true
+
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

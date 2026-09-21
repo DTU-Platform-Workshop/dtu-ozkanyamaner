@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+requests==2.32.3
+
+# opentelemetry-instrumentation 0.48b0 imports pkg_resources (from setuptools),
+# which python:3.12-slim does not ship -- pin it explicitly.
+setuptools==75.1.0
+opentelemetry-api==1.27.0
+opentelemetry-sdk==1.27.0
+opentelemetry-exporter-otlp-proto-grpc==1.27.0
+opentelemetry-instrumentation-fastapi==0.48b0
+opentelemetry-instrumentation-requests==0.48b0

@@ -1,0 +1,38 @@
+name: otel-app to GHCR
+on:
+  push:
+    branches: [main]
+    paths:
+      - first-app/**
+      - .github/workflows/otel-app.yaml
+
+env:
+  IMAGE: otel-app
+  CONTEXT: otel-app
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get package version
+        id: package-version
+        run: |
+          echo "version=$(git show -s --format=%cd --date=format:%Y%m%d HEAD)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "repo=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.CONTEXT }}
+          push: true
+          tags: ghcr.io/${{ steps.package-version.outputs.repo }}/${{ env.IMAGE }}:${{ steps.package-version.outputs.version }}
